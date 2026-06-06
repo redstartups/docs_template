@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setup Documentation | YourDocs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #e2ff5d;
+      --accent-bg: #161f00;
+      --accent-border: #3a4d00;
+      --bg: #0a0a0a;
+      --bg-surface: #0f0f0f;
+      --bg-hover: #161616;
+      --bg-code: #0e0e0e;
+      --border: #222;
+      --border-mid: #2a2a2a;
+      --text-primary: #f0ede4;
+      --text-secondary: #999;
+      --text-muted: #555;
+      --text-subtle: #444;
+      --text-nav: #888;
+      --blue: #4a90d9;
+      --sidebar-width: 240px;
+      --topbar-height: 52px;
+      --font-sans: 'Syne', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    button { font-family: var(--font-sans); cursor: pointer; }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      background: var(--bg-surface);
+      border-right: 0.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      height: 100vh;
+      scrollbar-width: thin;
+      scrollbar-color: #222 transparent;
+      transition: transform 0.25s ease;
+      z-index: 100;
+    }
+
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 20px;
+      border-bottom: 0.5px solid var(--border);
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+      position: sticky;
+      top: 0;
+      background: var(--bg-surface);
+      z-index: 10;
+    }
+
+    .logo-mark {
+      width: 26px;
+      height: 26px;
+      background: var(--accent);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .nav-body { flex: 1; padding-bottom: 12px; }
+
+    .nav-section { padding: 18px 0 4px; }
+
+    .nav-section-label {
+      padding: 0 20px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 20px;
+      font-size: 13px;
+      color: var(--text-nav);
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .nav-link i { font-size: 14px; }
+    .nav-link:hover { color: #ccc; background: var(--bg-hover); }
+    .nav-link.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--accent-bg);
+    }
+
+    .sidebar-footer {
+      border-top: 0.5px solid var(--border);
+      padding: 10px 0;
+    }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: var(--topbar-height);
+      border-bottom: 0.5px solid var(--border);
+      background: var(--bg);
+      flex-shrink: 0;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 0.5px solid var(--border);
+      background: transparent;
+      color: var(--text-nav);
+      font-size: 16px;
+      transition: all 0.15s;
+    }
+
+    .mobile-menu-btn:hover { background: var(--bg-hover); color: #ccc; }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .breadcrumb i { font-size: 11px; }
+    .breadcrumb .crumb-link { color: #666; transition: color 0.15s; }
+    .breadcrumb .crumb-link:hover { color: #aaa; }
+    .breadcrumb .current { color: #bbb; }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      border: 0.5px solid var(--border);
+      background: transparent;
+      color: var(--text-nav);
+      transition: all 0.15s;
+      font-weight: 500;
+    }
+
+    .btn i { font-size: 13px; }
+    .btn:hover { background: var(--bg-hover); color: #ccc; border-color: #444; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0a;
+      border-color: transparent;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover { background: #d4f04e; color: #0a0a0a; border-color: transparent; }
+
+    /* ── Content Area ── */
+    .content-scroll {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #222 transparent;
+    }
+
+    .content-scroll::-webkit-scrollbar { width: 5px; }
+    .content-scroll::-webkit-scrollbar-track { background: transparent; }
+    .content-scroll::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+
+    .content {
+      max-width: 740px;
+      padding: 44px 44px 80px;
+    }
+
+    /* ── Page Header ── */
+    .page-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--accent-bg);
+      color: var(--accent);
+      border: 0.5px solid var(--accent-border);
+      margin-bottom: 14px;
+    }
+
+    .page-tag i { font-size: 12px; }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.15;
+      letter-spacing: -0.8px;
+      margin-bottom: 12px;
+    }
+
+    .page-desc {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.75;
+      padding-bottom: 32px;
+      border-bottom: 0.5px solid #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    /* ── Content Typography ── */
+    h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ddd;
+      margin: 36px 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ccc;
+      margin: 24px 0 8px;
+    }
+
+    p {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
+
+    strong { color: #bbb; font-weight: 700; }
+
+    /* ── Step Badge ── */
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      background: #1a1a1a;
+      color: var(--accent);
+      border: 0.5px solid #333;
+      flex-shrink: 0;
+      font-family: var(--font-mono);
+    }
+
+    /* ── Callouts ── */
+    .callout {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      background: #111;
+      border: 0.5px solid var(--border-mid);
+      border-left: 2px solid var(--accent);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin: 16px 0;
+      font-size: 13px;
+      color: #888;
+      line-height: 1.65;
+    }
+
+    .callout i { font-size: 15px; margin-top: 1px; flex-shrink: 0; color: var(--accent); }
+    .callout.info { border-left-color: var(--blue); }
+    .callout.info i { color: var(--blue); }
+    .callout.warning { border-left-color: #e89c1c; }
+    .callout.warning i { color: #e89c1c; }
+
+    /* ── Code Blocks ── */
+    .code-block {
+      background: var(--bg-code);
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      margin: 14px 0;
+      overflow: hidden;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .code-lang {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 0.5px solid #333;
+      background: transparent;
+      color: #555;
+      cursor: pointer;
+      font-size: 11px;
+      transition: all 0.15s;
+      font-family: var(--font-sans);
+    }
+
+    .copy-btn i { font-size: 12px; }
+    .copy-btn:hover { background: #1a1a1a; color: #aaa; border-color: #444; }
+    .copy-btn.copied { color: var(--accent); border-color: var(--accent-border); background: var(--accent-bg); }
+
+    .code-body {
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: #bbb;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.7;
+    }
+
+    .code-body .hl { color: var(--accent); }
+    .code-body .comment { color: #555; }
+    .code-body .string { color: #9ed9a0; }
+    .code-body .keyword { color: #82aaff; }
+
+    /* ── Inline code ── */
+    code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: #161616;
+      color: #ccc;
+      border: 0.5px solid #2a2a2a;
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
+
+    /* ── Bottom Navigation ── */
+    .bottom-nav {
+      display: flex;
+      gap: 12px;
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 0.5px solid #1a1a1a;
+    }
+
+    .nav-card {
+      flex: 1;
+      background: var(--bg-surface);
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: inherit;
+    }
+
+    .nav-card:hover { border-color: #444; background: #141414; }
+
+    .nav-card-label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-subtle);
+      margin-bottom: 5px;
+    }
+
+    .nav-card-label i { font-size: 12px; }
+    .nav-card-title { font-size: 13px; font-weight: 700; color: #bbb; }
+    .nav-card.next { text-align: right; }
+    .nav-card.next .nav-card-label { justify-content: flex-end; }
+
+    /* ── Mobile Overlay ── */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 99;
+    }
+
+    /* ── Search bar (decorative) ── */
+    .search-wrap {
+      padding: 12px 16px;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .search-input {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #141414;
+      border: 0.5px solid var(--border);
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: text;
+      transition: border-color 0.15s;
+    }
+
+    .search-input:hover { border-color: #333; }
+    .search-input input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: #ccc;
+      font-size: 12px;
+      font-family: var(--font-sans);
+    }
+
+    .search-input input::placeholder { color: var(--text-muted); }
+    .search-input .kbd {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 1px 5px;
+      border: 0.5px solid #333;
+      border-radius: 3px;
+      color: #555;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .mobile-menu-btn { display: inline-flex; }
+      .content { padding: 28px 20px 60px; }
+      .topbar { padding: 0 16px; }
+      h1 { font-size: 24px; }
+      .bottom-nav { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- ── Sidebar ── -->
+  <nav class="sidebar" id="sidebar" aria-label="Documentation navigation">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M2 7h10M7 2l5 5-5 5" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      YourDocs
+    </div>
+
+    <div class="search-wrap">
+      <div class="search-input">
+        <i class="ti ti-search" style="font-size:14px" aria-hidden="true"></i>
+        <input type="text" placeholder="Search docs..." aria-label="Search documentation" />
+        <span class="kbd">⌘</span>
+      </div>
+    </div>
+
+    <div class="nav-body">
+
+      <div class="nav-section">
+        <div class="nav-section-label">Get Started</div>
+        <a class="nav-link active" href="#" data-page="setup">
+          <i class="ti ti-rocket" aria-hidden="true"></i> Setup
+        </a>
+        <a class="nav-link" href="#" data-page="first-steps">
+          <i class="ti ti-map" aria-hidden="true"></i> Your First Steps
+        </a>
+        <a class="nav-link" href="#" data-page="system-requirements">
+          <i class="ti ti-device-laptop" aria-hidden="true"></i> System Requirements
+        </a>
+        <a class="nav-link" href="#" data-page="credits">
+          <i class="ti ti-coins" aria-hidden="true"></i> How Credits Work
+        </a>
+        <a class="nav-link" href="#" data-page="examples">
+          <i class="ti ti-bulb" aria-hidden="true"></i> Example Use Cases
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">Core Features</div>
+        <a class="nav-link" href="#" data-page="chat-basics">
+          <i class="ti ti-message" aria-hidden="true"></i> Chat Basics
+        </a>
+        <a class="nav-link" href="#" data-page="generate-models">
+          <i class="ti ti-cube" aria-hidden="true"></i> Generate Models
+        </a>
+        <a class="nav-link" href="#" data-page="build-ui">
+          <i class="ti ti-layout" aria-hidden="true"></i> Build UI with AI
+        </a>
+        <a class="nav-link" href="#" data-page="editing-scripts">
+          <i class="ti ti-code" aria-hidden="true"></i> Editing Scripts
+        </a>
+        <a class="nav-link" href="#" data-page="assets">
+          <i class="ti ti-folder" aria-hidden="true"></i> Managing Assets
+        </a>
+        <a class="nav-link" href="#" data-page="team">
+          <i class="ti ti-users" aria-hidden="true"></i> Team Collaboration
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">API Reference</div>
+        <a class="nav-link" href="#" data-page="api-overview">
+          <i class="ti ti-api" aria-hidden="true"></i> Overview
+        </a>
+        <a class="nav-link" href="#" data-page="auth">
+          <i class="ti ti-lock" aria-hidden="true"></i> Authentication
+        </a>
+        <a class="nav-link" href="#" data-page="endpoints">
+          <i class="ti ti-route" aria-hidden="true"></i> Endpoints
+        </a>
+        <a class="nav-link" href="#" data-page="rate-limits">
+          <i class="ti ti-gauge" aria-hidden="true"></i> Rate Limits
+        </a>
+        <a class="nav-link" href="#" data-page="webhooks">
+          <i class="ti ti-webhook" aria-hidden="true"></i> Webhooks
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">Account & Plans</div>
+        <a class="nav-link" href="#" data-page="plans">
+          <i class="ti ti-star" aria-hidden="true"></i> Plans Overview
+        </a>
+        <a class="nav-link" href="#" data-page="billing">
+          <i class="ti ti-credit-card" aria-hidden="true"></i> Billing
+        </a>
+        <a class="nav-link" href="#" data-page="privacy">
+          <i class="ti ti-shield" aria-hidden="true"></i> Privacy & Security
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">Troubleshooting</div>
+        <a class="nav-link" href="#" data-page="troubleshooting">
+          <i class="ti ti-tool" aria-hidden="true"></i> Troubleshooting Hub
+        </a>
+        <a class="nav-link" href="#" data-page="connection">
+          <i class="ti ti-wifi-off" aria-hidden="true"></i> Connection Issues
+        </a>
+        <a class="nav-link" href="#" data-page="billing-issues">
+          <i class="ti ti-receipt-off" aria-hidden="true"></i> Billing Issues
+        </a>
+        <a class="nav-link" href="#" data-page="account-login">
+          <i class="ti ti-login" aria-hidden="true"></i> Account & Login
+        </a>
+      </div>
+
+    </div>
+
+    <div class="sidebar-footer">
+      <a class="nav-link" href="#">
+        <i class="ti ti-brand-discord" aria-hidden="true"></i> Community
+      </a>
+      <a class="nav-link" href="#">
+        <i class="ti ti-lifebuoy" aria-hidden="true"></i> Support
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── Main ── -->
+  <main class="main">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" onclick="openSidebar()" aria-label="Open navigation">
+          <i class="ti ti-menu-2" aria-hidden="true"></i>
+        </button>
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a class="crumb-link" href="#">Docs</a>
+          <i class="ti ti-chevron-right" aria-hidden="true"></i>
+          <a class="crumb-link" href="#">Get Started</a>
+          <i class="ti ti-chevron-right" aria-hidden="true"></i>
+          <span class="current" id="breadcrumbCurrent">Setup</span>
+        </nav>
+      </div>
+      <div class="topbar-actions">
+        <a class="btn" href="https://github.com" target="_blank">
+          <i class="ti ti-brand-github" aria-hidden="true"></i> GitHub
+        </a>
+        <a class="btn btn-primary" href="#">
+          <i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard
+        </a>
+      </div>
+    </header>
+
+    <!-- Scrollable Content -->
+    <div class="content-scroll">
+      <article class="content">
+
+        <div class="page-tag">
+          <i class="ti ti-rocket" aria-hidden="true"></i> Get Started
+        </div>
+
+        <h1>Setup</h1>
+        <p class="page-desc">
+          Get your project running in about three minutes. You need an account, the CLI installed, and a modern browser.
+        </p>
+
+        <!-- Step 1 -->
+        <h2><span class="step-badge" aria-label="Step 1">1</span> Create your account</h2>
+        <p>
+          Go to <strong>yourdomain.com</strong> and click <strong>Continue with OAuth</strong>. We use OAuth so there is no separate password to manage. Authorize the app when prompted and you'll be returned to the dashboard.
+        </p>
+        <div class="callout" role="note">
+          <i class="ti ti-shield-check" aria-hidden="true"></i>
+          <span>We never see your credentials. OAuth only shares your username, user ID, and avatar with our system.</span>
+        </div>
+
+        <!-- Step 2 -->
+        <h2><span class="step-badge" aria-label="Step 2">2</span> Install the CLI</h2>
+        <p>
+          Run the install command from your terminal. After installing, restart your shell so the <code>yourdocs</code> command is available on your <code>PATH</code>.
+        </p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">bash</span>
+            <button class="copy-btn" data-code="npm install -g @yourdocs/cli">
+              <i class="ti ti-copy" aria-hidden="true"></i> Copy
+            </button>
+          </div>
+          <div class="code-body"><span class="comment"># Install globally via npm</span>
+npm install -g @yourdocs/cli
+
+<span class="comment"># Or use Homebrew (macOS)</span>
+brew install yourdocs</div>
+        </div>
+
+        <!-- Step 3 -->
+        <h2><span class="step-badge" aria-label="Step 3">3</span> Authenticate the CLI</h2>
+        <p>
+          The CLI authenticates automatically using the account you are signed into on the dashboard. There is no API key to paste. If your terminal shows a green status indicator, you are connected.
+        </p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">bash</span>
+            <button class="copy-btn" data-code="yourdocs auth login">
+              <i class="ti ti-copy" aria-hidden="true"></i> Copy
+            </button>
+          </div>
+          <div class="code-body">yourdocs auth login
+<span class="comment"># Opens browser for OAuth flow</span>
+<span class="hl">✓</span> Authenticated as yourname@example.com</div>
+        </div>
+        <div class="callout info" role="note">
+          <i class="ti ti-info-circle" aria-hidden="true"></i>
+          <span>You must be logged in with the same account on both the web app and the CLI. Mismatched accounts is the most common setup issue.</span>
+        </div>
+
+        <!-- Step 4 -->
+        <h2><span class="step-badge" aria-label="Step 4">4</span> Enable API access</h2>
+        <p>
+          Your project needs API access enabled. Open your project settings and toggle <strong>Allow API Requests</strong> on. This is per-project, so repeat this step for every project you want the CLI to work with.
+        </p>
+        <div class="callout warning" role="note">
+          <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+          <span>If API access is off, the CLI will appear connected but no changes will reach your project.</span>
+        </div>
+
+        <!-- Step 5 -->
+        <h2><span class="step-badge" aria-label="Step 5">5</span> Send your first request</h2>
+        <p>
+          Head back to the dashboard and run your first command. The system will read your project, plan the change, and apply it live.
+        </p>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">bash</span>
+            <button class="copy-btn" data-code="yourdocs start --project my-app">
+              <i class="ti ti-copy" aria-hidden="true"></i> Copy
+            </button>
+          </div>
+          <div class="code-body">yourdocs start --project my-app
+<span class="hl">✓</span> Connected to project <span class="string">"my-app"</span>
+<span class="hl">✓</span> Watching for changes...
+  
+<span class="comment"># Ask the AI a question</span>
+<span class="hl">></span> Add a login button to the header</div>
+        </div>
+
+        <!-- What gets synced -->
+        <h2>What gets synced</h2>
+        <p>
+          The CLI watches the directories where your app code actually lives. This includes <code>src/</code>, <code>components/</code>, <code>pages/</code>, <code>api/</code>, <code>styles/</code>, and <code>public/</code>.
+        </p>
+        <p>
+          <strong>The <code>.env</code> file and <code>secrets/</code> folder are intentionally never synced</strong> so that private keys and credentials stay out of the AI context.
+        </p>
+
+        <!-- Troubleshooting -->
+        <h2>Troubleshooting</h2>
+        <p>
+          If the CLI shows as offline, double-check that you are logged into the same account on both the web app and the CLI, and that API access is enabled for your project. See the <a href="#" style="color: var(--accent); text-decoration: underline; text-underline-offset: 3px;">Troubleshooting Hub</a> for more details.
+        </p>
+
+        <!-- Bottom Nav -->
+        <nav class="bottom-nav" aria-label="Page navigation">
+          <a class="nav-card" href="#">
+            <div class="nav-card-label">
+              <i class="ti ti-arrow-left" aria-hidden="true"></i> Previous
+            </div>
+            <div class="nav-card-title">Getting Started</div>
+          </a>
+          <a class="nav-card next" href="#">
+            <div class="nav-card-label">
+              Next <i class="ti ti-arrow-right" aria-hidden="true"></i>
+            </div>
+            <div class="nav-card-title">Your First Steps</div>
+          </a>
+        </nav>
+
+      </article>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  /* ── Mobile Sidebar ── */
+  function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ── Active Nav Link ── */
+  document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      this.classList.add('active');
+      const label = this.textContent.trim();
+      document.getElementById('breadcrumbCurrent').textContent = label;
+      if (window.innerWidth <= 768) closeSidebar();
+    });
+  });
+
+  /* ── Copy Buttons ── */
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const code = this.dataset.code;
+      // Try clipboard API, fall back gracefully
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => showCopied(this));
+      } else {
+        // Fallback: create a temp textarea
+        const ta = document.createElement('textarea');
+        ta.value = code;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showCopied(this);
+      }
+    });
+  });
+
+  function showCopied(btn) {
+    const original = btn.innerHTML;
+    btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = original;
+      btn.classList.remove('copied');
+    }, 2000);
+  }
+
+  /* ── Search (⌘K / Ctrl+K) ── */
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      const input = document.querySelector('.search-input input');
+      if (input) input.focus();
+    }
+  });
+
+  /* ── Escape closes sidebar on mobile ── */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeSidebar();
+  });
+</script>
+
+</body>
+</html>
